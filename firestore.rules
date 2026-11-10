@@ -1,0 +1,84 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnerOfNew() {
+      return signedIn() && request.resource.data.authorUid == request.auth.uid;
+    }
+
+    function validName() {
+      return request.resource.data.authorName is string
+        && request.resource.data.authorName.size() > 0
+        && request.resource.data.authorName.size() <= 100;
+    }
+
+    function validPhoto() {
+      return request.resource.data.authorPhoto == null
+        || (request.resource.data.authorPhoto is string
+            && request.resource.data.authorPhoto.size() <= 500);
+    }
+
+    match /posts/{postId} {
+      allow read: if signedIn();
+
+      // aiSummary / commentCount / lastActivityAt are written only by Cloud Functions.
+      allow create: if isOwnerOfNew()
+        && request.resource.data.keys().hasOnly([
+          'url', 'title', 'description', 'domain', 'authorUid', 'authorName',
+          'authorPhoto', 'createdAt', 'lastActivityAt', 'commentCount'
+        ])
+        && request.resource.data.url is string
+        && request.resource.data.url.matches('^https?://[^\\s]+$')
+        && request.resource.data.url.size() <= 2000
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 1000
+        && request.resource.data.domain is string
+        && request.resource.data.domain.size() <= 253
+        && validName()
+        && validPhoto()
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.lastActivityAt == request.time
+        && request.resource.data.commentCount == 0;
+
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.authorUid == request.auth.uid;
+
+      match /comments/{commentId} {
+        allow read: if signedIn();
+
+        allow create: if isOwnerOfNew()
+          && request.resource.data.keys().hasOnly([
+            'text', 'authorUid', 'authorName', 'authorPhoto', 'createdAt'
+          ])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000
+          && validName()
+          && validPhoto()
+          && request.resource.data.createdAt == request.time
+          && exists(/databases/$(database)/documents/posts/$(postId));
+
+        allow update: if false;
+        allow delete: if signedIn() && resource.data.authorUid == request.auth.uid;
+      }
+    }
+
+    // Written only by Cloud Functions (Admin SDK bypasses rules).
+    match /topics/{doc} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /usage/{doc} {
+      allow read, write: if false;
+    }
+  }
+}

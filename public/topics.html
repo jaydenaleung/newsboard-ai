@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Next class · AI Newsboard</title>
+  <meta name="description" content="Share and discuss recent AI news for the Artificial Intelligence class.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b5bdb'/%3E%3Cpath d='M8 22V10l8 8 8-8v12' stroke='white' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="wrap">
+    <section id="signed-out" class="signed-out" hidden>
+      <h1>AI Class Newsboard</h1>
+      <p class="lead">Sign in to read and share recent AI news with the class.</p>
+      <button id="sign-in" class="btn" type="button">Sign in with Google</button>
+      <p id="auth-error" class="error" role="alert"></p>
+    </section>
+    <div id="content" hidden>
+      <h1>Topics for next class</h1>
+      <p class="lead">AI-suggested discussion topics based on what the class has been posting and talking about lately.</p>
+      <div class="card-actions" style="margin-bottom:14px">
+        <button id="generate" class="btn" type="button">Generate topics</button>
+        <span id="gen-status" class="meta" role="status"></span>
+      </div>
+      <p id="topics-error" class="error" role="alert"></p>
+      <div id="topics"></div>
+    </div>
+  </main>
+  <script type="module" src="js/topics.js"></script>
+</body>
+</html>
