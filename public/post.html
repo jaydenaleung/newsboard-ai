@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discussion · AI Newsboard</title>
+  <meta name="description" content="Share and discuss recent AI news for the Artificial Intelligence class.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b5bdb'/%3E%3Cpath d='M8 22V10l8 8 8-8v12' stroke='white' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main class="wrap">
+    <section id="signed-out" class="signed-out" hidden>
+      <h1>AI Class Newsboard</h1>
+      <p class="lead">Sign in to read and share recent AI news with the class.</p>
+      <button id="sign-in" class="btn" type="button">Sign in with Google</button>
+      <p id="auth-error" class="error" role="alert"></p>
+    </section>
+    <div id="content" hidden>
+      <p><a href="index.html">← All news</a></p>
+      <div id="post"></div>
+      <div id="summary"></div>
+      <section class="card">
+        <h2 id="comments-heading">Discussion</h2>
+        <div id="comments" aria-live="polite"></div>
+        <form id="comment-form" class="stack">
+          <label>Add a comment
+            <textarea name="text" required maxlength="2000" placeholder="What do you think?"></textarea>
+          </label>
+          <p id="comment-error" class="error" role="alert"></p>
+          <div><button class="btn" type="submit">Comment</button></div>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="js/post.js"></script>
+</body>
+</html>
